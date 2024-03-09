@@ -1,12 +1,13 @@
-import express from "express";
+import express from 'express';
 import cors from 'cors';
-const app = express;
 
-app.request(cors());
-app.request(express.json());
+
+const app = express();
+
+app.use(cors());
+app.use(express.json());
 
 import Chance from 'chance';
-import { name } from "tar/lib/types";
 const chance = new Chance();
 
 const animals = [...Array(250).keys()].map(id => {
@@ -17,3 +18,12 @@ const animals = [...Array(250).keys()].map(id => {
         name: chance.name(),
     }
 })
+
+app.get('', (req, res) => {
+    const q = req.query.q?.toLowerCase() || '';
+    const results = animals.filter(animal => animal.type.toLowerCase().includes(q))
+
+    res.send(results);
+});
+
+app.listen(8080, () => console.log('Listening on port http://localhost:8080'));
